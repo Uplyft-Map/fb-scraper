@@ -43,7 +43,7 @@ def run_scrape_thread(school_queue, school_dict, all_confessions, pbar):
                 time.sleep(1)
 
                 # Load more posts
-                heights = deque(maxlen=10)
+                heights = deque(maxlen=50)
                 heights.append(driver.execute_script("return document.body.scrollHeight"))
 
                 for i in range(NUM_SCROLLS):
@@ -52,7 +52,7 @@ def run_scrape_thread(school_queue, school_dict, all_confessions, pbar):
 
                     heights.append(driver.execute_script("return document.body.scrollHeight"))
 
-                    if len(heights) == 10 and all(i == heights[0] for i in heights):
+                    if len(heights) == 50 and all(i == heights[0] for i in heights):
                         break
 
                 # Close popup to clear viewport
@@ -75,13 +75,14 @@ def run_scrape_thread(school_queue, school_dict, all_confessions, pbar):
                 post_texts = ["\n".join(thing.text for thing in post.find_elements_by_tag_name('p')) for post in posts]
 
                 all_confessions[school].extend(post_texts)
+                print(f"Got {len(post_texts)} confessions from {school}")
         except:
             print(f"oops, {school} broke. continuing...")
 
         pbar.update(1)
 
 with tqdm(total=len(school_queue)) as pbar:
-    threads = [threading.Thread(target=run_scrape_thread, args=(school_queue, SCHOOL_DICT, all_confessions, pbar)) for i in range(4)]
+    threads = [threading.Thread(target=run_scrape_thread, args=(school_queue, SCHOOL_DICT, all_confessions, pbar)) for i in range(8)]
     for thread in threads:
         thread.start()
     for thread in threads:
