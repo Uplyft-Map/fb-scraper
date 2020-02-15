@@ -1,6 +1,6 @@
 from selenium.webdriver import Chrome
 import time
-import pprint
+import pickle
 
 SCRAPE_URL = "https://mobile.facebook.com/confessatcarnegiemellon/"
 NUM_SCROLLS = 50
@@ -26,7 +26,7 @@ for button in more_buttons:
 posts = driver.find_elements_by_class_name("story_body_container")
 post_texts = ["\n".join(thing.text for thing in post.find_elements_by_tag_name('p')) for post in posts]
 
-pp = pprint.PrettyPrinter(indent=4)
-pp.pprint(post_texts)
+with open('cmu_confessions.pickle', 'wb') as f:
+    pickle.dump(post_texts, f)
 
 driver.close()
