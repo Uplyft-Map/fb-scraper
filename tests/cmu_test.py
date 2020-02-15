@@ -1,4 +1,4 @@
-from selenium.webdriver import Chrome
+from selenium.webdriver import ChromeOptions, Chrome
 import time
 import pickle
 
@@ -6,7 +6,10 @@ SCRAPE_URL = "https://mobile.facebook.com/confessatcarnegiemellon/"
 NUM_SCROLLS = 50
 SCROLL_DELAY = 0.5
 
-driver = Chrome()
+options = ChromeOptions()
+options.add_argument('headless')
+
+driver = Chrome(options=options)
 driver.get(SCRAPE_URL)
 
 for i in range(NUM_SCROLLS):
