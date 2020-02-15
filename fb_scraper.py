@@ -1,4 +1,4 @@
-from selenium.webdriver import Chrome
+from selenium.webdriver import Chrome, ChromeOptions
 from collections import defaultdict, deque
 from tqdm import tqdm
 import time
@@ -23,13 +23,16 @@ school_queue = deque(SCHOOL_DICT)
 
 def run_scrape_thread(school_queue, school_dict, all_confessions, pbar):
     # Open Chrome window
-    driver = Chrome()
+    options = ChromeOptions()
+    options.add_argument('headless')
+    driver = Chrome(options=options)
 
     # Loop for eaech school
     while school_queue:
+        school = school_queue.popleft()
+
         try:
             # Get school URL
-            school = school_queue.popleft()
             print(f"Scraping {school}")
             school_urls = school_dict[school]
 
@@ -73,7 +76,7 @@ def run_scrape_thread(school_queue, school_dict, all_confessions, pbar):
 
                 all_confessions[school].extend(post_texts)
         except:
-            print("oops, this broke. continuing...")
+            print(f"oops, {school} broke. continuing...")
 
         pbar.update(1)
 
